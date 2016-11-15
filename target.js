@@ -20,6 +20,7 @@
             Messages.sendMessage(HIT_CHANNEL, JSON.stringify({
                 entityID: entityID
             }));
+            print("Done sending message");
         }
     }
 

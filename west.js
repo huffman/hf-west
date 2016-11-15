@@ -47,19 +47,20 @@ findEntities = function(properties, searchRadius, filterFn) {
 }
 
 function Target(entityID) {
+    print("Entity id: ", entityID);
     this.entityID = entityID;
 }
 Target.prototype = {
     moveUp: function() {
         print("Moving up");
         Entities.editEntity(this.entityID, {
-            localRotation: Quat.fromPitchYawRollDegrees(0, 0, 0)
+            rotation: Quat.fromPitchYawRollDegrees(0, 0, 0)
         });
     },
     moveDown: function() {
         print("Moving down");
         Entities.editEntity(this.entityID, {
-            localRotation: Quat.fromPitchYawRollDegrees(-90, 0, 0)
+            rotation: Quat.fromPitchYawRollDegrees(-90, 0, 0)
         });
     }
 };
@@ -72,9 +73,16 @@ var targets = [
 
 var HIT_CHANNEL = "West-Hit";
 
-function receivedMessage(message, channel, sender) {
-    if (channel == HIT_CHANNEL) {
-        print(channel, message, sender);
+function receivedMessage(channel, message, sender) {
+    if (channel === HIT_CHANNEL) {
+        print("Got message:", channel, message, sender);
+        var info = JSON.parse(message);
+        for (var i = 0; i < targets.length; ++i) {
+            if (info.entityID === targets[i].entityID) {
+                targets[i].moveDown();
+                break;
+            }
+        }
     }
 }
 Messages.subscribe(HIT_CHANNEL);
